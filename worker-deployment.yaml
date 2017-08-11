@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "lake-presto-worker"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        application: "lake-presto-worker"
+    spec:
+      containers:
+        - name: "lake-presto-worker"
+          image: "registry.hub.docker.com/sayatez/presto-docker:latest"
+          imagePullPolicy: Always
+          env:
+            - name: MEM_TOTAL_KB
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Ki
+            - name: CREDENTIALS_DIR
+              value: "/meta/credentials"
+            - name: IS_COORDINATOR
+              value: 'false'
+            - name: DISCOVERY_URL
+              value: 'https://presto.example.org'
+            - name: IS_DISCOVERY_ENABLED
+              value: 'true'
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 1024Mi
+            limits:
+              memory: 2048Mi

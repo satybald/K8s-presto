@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "lake-presto"
+  annotations:
+    # this annotation is specific to https://github.com/zalando-incubator/kube-ingress-aws-controller
+spec:
+  rules:
+  # DNS name your application should be exposed on
+  - host: "presto.example.org"
+    http: 
+      paths: 
+      - path:
+        backend: 
+          serviceName: "lake-presto"
+          servicePort: 80
